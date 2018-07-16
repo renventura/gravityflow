@@ -550,4 +550,20 @@ class Gravity_Flow_Assignee {
 
 		return $text;
 	}
+
+	/**
+	 * Returns a json encoded array containing a few properties suitable for inclusion in the log.
+	 *
+	 * @since 2.2.3-dev
+	 *
+	 * @return string
+	 */
+	public function get_log_formatted_var() {
+		return json_encode( array(
+			'name' => $this->name,
+			'id'   => $this->get_id(),
+			'type' => $this->get_type(),
+		) );
+	}
+
 }
