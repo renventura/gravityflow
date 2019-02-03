@@ -2230,4 +2230,19 @@ abstract class Gravity_Flow_Step extends stdClass {
 		$this->log_debug( 'Assignees purged. number of rows deleted: ' . $result );
 	}
 
+	public function is_user_assignee() {
+		$assignees = $this->get_assignees();
+
+		$is_assignee = false;
+
+		foreach ( $assignees as $assignee ) {
+			if ( $assignee->is_current_user() ) {
+				$is_assignee = true;
+				break;
+			}
+		}
+
+		return $is_assignee;
+	}
+
 }

@@ -1201,6 +1201,14 @@ PRIMARY KEY  (id)
 		public function feed_settings_fields() {
 			$current_step_id = $this->get_current_feed_id();
 
+			$is_start_step = false;
+			if ( $current_step_id ) {
+				$step = $this->get_step( $current_step_id );
+				if ( $step->get_type() === 'workflow_start' ) {
+					$is_start_step = true;
+				}
+			}
+
 			$step_type_choices = array();
 
 			$step_classes = Gravity_Flow_Steps::get_all();
@@ -1254,12 +1262,17 @@ PRIMARY KEY  (id)
 						'type'  => 'textarea',
 					),
 					$step_type_setting,
+				),
+			);
+
+			if ( ! $is_start_step ) {
+				$standard_fields = array(
 					array(
-						'name'                => 'step_highlight',
-						'label'               => esc_html__( 'Highlight', 'gravityflow' ),
-						'type'                => 'step_highlight',
-						'required'            => false,
-						'tooltip'             => esc_html__( 'Highlighted steps will stand out in both the workflow inbox and the step list. Use highlighting to bring attention to important tasks and to help organise complex workflows.', 'gravityflow' ),
+						'name'     => 'step_highlight',
+						'label'    => esc_html__( 'Highlight', 'gravityflow' ),
+						'type'     => 'step_highlight',
+						'required' => false,
+						'tooltip'  => esc_html__( 'Highlighted steps will stand out in both the workflow inbox and the step list. Use highlighting to bring attention to important tasks and to help organise complex workflows.', 'gravityflow' ),
 					),
 					array(
 						'name'           => 'condition',
@@ -1270,15 +1283,16 @@ PRIMARY KEY  (id)
 						'instructions'   => esc_html__( 'Perform this step if', 'gravityflow' ),
 					),
 					array(
-						'name' => 'scheduled',
-						'label' => esc_html__( 'Schedule', 'gravityflow' ),
-						'type' => 'schedule',
+						'name'    => 'scheduled',
+						'label'   => esc_html__( 'Schedule', 'gravityflow' ),
+						'type'    => 'schedule',
 						'tooltip' => esc_html__( 'Scheduling a step will queue entries and prevent them from starting this step until the specified date or until the delay period has elapsed.', 'gravityflow' )
 						             . ' ' . esc_html__( 'Note: the schedule setting requires the WordPress Cron which is included and enabled by default unless your host has deactivated it.', 'gravityflow' ),
 
 					),
-				),
-			);
+				);
+				$settings[0]['fields'] = array_merge( $settings[0]['fields'], $standard_fields );
+			}
 
 			foreach ( $step_classes as $step_class ) {
 				$type = $step_class->get_type();
@@ -3601,6 +3615,11 @@ jQuery('#setting-entry-filter-{$name}').gfFilterUI({$filter_settings_json}, {$va
 			$next_step = false;
 			foreach ( $steps as $step ) {
 				if ( $next_step ) {
+
+					if ( $step->get_type() == 'complete' ) {
+						return false;
+					}
+
 					if ( $step->is_active() && $step->is_condition_met( $form ) ) {
 						return $step;
 					}
