@@ -414,14 +414,16 @@ abstract class Gravity_Flow_Extension extends GFAddOn {
 				$license_details = $posted_license_key ? $this->activate_license( $posted_license_key ) : false;
 			}
 			if ( $license_details ) {
-				set_transient( $transient_key, $license_details, DAY_IN_SECONDS );
+				$expiration = DAY_IN_SECONDS + rand( 0, DAY_IN_SECONDS );
+				set_transient( $transient_key, $license_details, $expiration );
 			}
 		} else {
 			$license_details = get_transient( $transient_key );
 			if ( ! $license_details ) {
 				$license_details = $this->check_license();
 				if ( $license_details ) {
-					set_transient( $transient_key, $license_details, DAY_IN_SECONDS );
+					$expiration = DAY_IN_SECONDS + rand( 0, DAY_IN_SECONDS );
+					set_transient( $transient_key, $license_details, $expiration );
 				}
 			}
 		}
