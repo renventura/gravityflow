@@ -13,16 +13,16 @@ if ( ! class_exists( 'GFForms' ) ) {
 	die();
 }
 
-if ( ! class_exists( 'Gravity_Flow_Step_User_Input' ) ) {
-	require_once( 'class-step-user-input.php' );
-}
-
 /**
  * Class Gravity_Flow_Step_Complete
+ *
+ * @since 2.5
  */
 class Gravity_Flow_Step_Workflow_Start extends Gravity_Flow_Step {
 	/**
 	 * The step type.
+	 *
+	 * @since 2.5
 	 *
 	 * @var string
 	 */
@@ -30,6 +30,8 @@ class Gravity_Flow_Step_Workflow_Start extends Gravity_Flow_Step {
 
 	/**
 	 * Returns the step label.
+	 *
+	 * @since 2.5
 	 *
 	 * @return string
 	 */
@@ -40,6 +42,8 @@ class Gravity_Flow_Step_Workflow_Start extends Gravity_Flow_Step {
 	/**
 	 * Indicates this step can expire without user input.
 	 *
+	 * @since 2.5
+	 *
 	 * @return bool
 	 */
 	public function supports_expiration() {
@@ -49,10 +53,30 @@ class Gravity_Flow_Step_Workflow_Start extends Gravity_Flow_Step {
 	/**
 	 * Returns the HTML for the step icon.
 	 *
+	 * @since 2.5
+	 *
 	 * @return string
 	 */
 	public function get_icon_url() {
-		return '<i class="fa fa-pencil" ></i>';
+		return '<i style="color:darkgreen;" class="fa fa-play" aria-hidden="true"></i>';
+	}
+
+	/**
+	 * Returns an array of statuses and their properties.
+	 *
+	 * @since 2.5
+	 *
+	 * @return array
+	 */
+	public function get_status_config() {
+		return array(
+			array(
+				'status'                    => 'complete',
+				'status_label'              => __( 'Complete', 'gravityflow' ),
+				'destination_setting_label' => __( 'First Step', 'gravityflow' ),
+				'default_destination'       => 'next',
+			),
+		);
 	}
 
 	/**
