@@ -167,6 +167,7 @@ if ( class_exists( 'GFForms' ) ) {
 			add_filter( 'gform_export_form', array( $this, 'filter_gform_export_form' ) );
 			add_action( 'gform_forms_post_import', array( $this, 'action_gform_forms_post_import' ) );
 			parent::pre_init();
+			add_action( 'gform_post_add_entry', array( $this, 'action_gform_post_add_entry' ), 10, 2 );
 			add_filter( 'cron_schedules', array( $this, 'filter_cron_schedule' ) );
 			if ( ! wp_next_scheduled( 'gravityflow_cron' ) ) {
 				wp_schedule_event( time(), 'fifteen_minutes', 'gravityflow_cron' );
@@ -199,7 +200,6 @@ if ( class_exists( 'GFForms' ) ) {
 			add_action( 'gform_entry_created', array( $this, 'action_entry_created' ), 8, 2 );
 			add_action( 'gform_register_init_scripts', array( $this, 'filter_gform_register_init_scripts' ), 10, 3 );
 			add_action( 'wp_login', array( $this, 'filter_wp_login' ), 10, 2 );
-			add_action( 'gform_post_add_entry', array( $this, 'action_gform_post_add_entry' ), 10, 2 );
 
 			if ( $this->is_gravityforms_supported( '2.3.4.2' ) ) {
 				add_filter( 'gform_entry_pre_handle_confirmation', array( $this, 'after_submission' ), 9, 2 );
