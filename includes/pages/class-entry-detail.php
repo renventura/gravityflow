@@ -93,27 +93,36 @@ class Gravity_Flow_Entry_Detail {
 
 								$editable_fields = array();
 
+								$can_update = false;
+
 								if ( $current_step ) {
-									$can_update      = self::can_update( $current_step );
+									$can_update = self::can_update( $current_step );
 									if ( $can_update ) {
 										$editable_fields = $can_update ? $current_step->get_editable_fields() : array();
+										$instructions_step = $current_step;
+									} else {
+										$start_step = false;
 
-										self::maybe_show_instructions( $display_instructions, $current_step, $form, $entry );
-									}
-								} else {
-									$start_step = false;
+										$steps = gravity_flow()->get_steps( $form['id'], $entry );
+										foreach( $steps as $s) {
+											if ( $s->get_type() == 'workflow_start' ) {
+												$start_step = $s;
+												break;
+											}
+										}
 
-									$steps = gravity_flow()->get_steps( $form['id'], $entry );
-									foreach( $steps as $s) {
-										if ( $s->get_type() == 'workflow_start' ) {
-											$start_step = $s;
-											break;
+										if ( $start_step ) {
+											$instructions_step = $start_step;
 										}
 									}
 
-									if ( $start_step ) {
-										self::maybe_show_instructions( $display_instructions, $start_step, $form, $entry );
+									if ( $instructions_step ) {
+										self::maybe_show_instructions( $display_instructions, $instructions_step, $form, $entry );
 									}
+								}
+
+								if ( ( ( $current_step && ! $can_update ) || ! $current_step ) && get_current_user_id() == $entry['created_by'] ) {
+
 								}
 
 								self::entry_detail_grid( $form, $entry, $display_empty_fields, $editable_fields, $current_step );
