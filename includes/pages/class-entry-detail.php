@@ -93,7 +93,7 @@ class Gravity_Flow_Entry_Detail {
 
 								$editable_fields = array();
 
-								$can_update = false;
+								$instructions_step = null;
 
 								if ( $current_step ) {
 									$can_update = self::can_update( $current_step );
