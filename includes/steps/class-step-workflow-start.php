@@ -73,7 +73,7 @@ class Gravity_Flow_Step_Workflow_Start extends Gravity_Flow_Step {
 			array(
 				'status'                    => 'complete',
 				'status_label'              => __( 'Complete', 'gravityflow' ),
-				'destination_setting_label' => __( 'First Step', 'gravityflow' ),
+				'destination_setting_label' => __( 'First Step in the workflow', 'gravityflow' ),
 				'default_destination'       => 'next',
 			),
 		);
@@ -90,15 +90,14 @@ class Gravity_Flow_Step_Workflow_Start extends Gravity_Flow_Step {
 
 		$settings = array(
 			'title'  => esc_html__( 'Start', 'grvityflow' ),
-			'description' => esc_html__( 'Define the settings for users who are not assignees and for when the workflow is complete.', 'grvityflow' ),
 			'fields' => array(
 				array(
 					'name'     => 'instructions',
-					'label'    => __( 'Message', 'gravityflow' ),
+					'label'    => __( 'Pending Message', 'gravityflow' ),
 					'type'     => 'checkbox_and_textarea',
-					'tooltip'  => esc_html__( 'Activate this setting to display a message to the user.', 'gravityflow' ),
+					'tooltip'  => esc_html__( 'Enable this setting to display a message to form submitters while their workflow is in progress.', 'gravityflow' ),
 					'checkbox' => array(
-						'label' => esc_html__( 'Display message', 'gravityflow' ),
+						'label' => esc_html__( 'Display a message above the entry to form submitters while their workflow is in progress.', 'gravityflow' ),
 					),
 					'textarea' => array(
 						'use_editor'    => true,
@@ -107,8 +106,8 @@ class Gravity_Flow_Step_Workflow_Start extends Gravity_Flow_Step {
 				),
 				array(
 					'name'    => 'display_fields',
-					'label'   => __( 'Display Fields', 'gravityflow' ),
-					'tooltip' => __( 'Select the fields to hide or display to non-assignees.', 'gravityflow' ),
+					'label'   => __( 'Default Display Fields', 'gravityflow' ),
+					'tooltip' => __( 'Select the fields to hide or display for users who are not assignees and when the workflow is complete. Users with the "View All" capability can see all fields.', 'gravityflow' ),
 					'type'    => 'display_fields',
 				),
 			),
