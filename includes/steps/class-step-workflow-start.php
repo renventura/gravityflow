@@ -95,9 +95,9 @@ class Gravity_Flow_Step_Workflow_Start extends Gravity_Flow_Step {
 					'name'     => 'instructions',
 					'label'    => __( 'Pending Message', 'gravityflow' ),
 					'type'     => 'checkbox_and_textarea',
-					'tooltip'  => esc_html__( 'Enable this setting to display a message to form submitters while their workflow is in progress.', 'gravityflow' ),
+					'tooltip'  => esc_html__( 'Enable this setting to display a message to the form submitter while the workflow is in progress.', 'gravityflow' ),
 					'checkbox' => array(
-						'label' => esc_html__( 'Display a message above the entry to form submitters while their workflow is in progress.', 'gravityflow' ),
+						'label' => esc_html__( 'Display a message to the form submitter while the workflow is in progress.', 'gravityflow' ),
 					),
 					'textarea' => array(
 						'use_editor'    => true,
