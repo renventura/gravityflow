@@ -1214,9 +1214,13 @@ PRIMARY KEY  (id)
 			$has_start_step = false;
 			if ( $current_step_id ) {
 				$step = $this->get_step( $current_step_id );
-				if ( $step->get_type() === 'workflow_start' ) {
-					$is_start_step = true;
-				}
+				$step_type = $step->get_type();
+			} else {
+				$step_type = $this->get_setting( 'step_type' );
+			}
+
+			if ( $step_type === 'workflow_start' ) {
+				$is_start_step = true;
 			}
 
 			if ( $is_start_step ) {
