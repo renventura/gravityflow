@@ -1494,6 +1494,37 @@ PRIMARY KEY  (id)
 			return true;
 		}
 
+		public function save_feed_settings( $feed_id, $form_id, $settings ) {
+
+			$feeds = $this->get_feeds( $form_id );
+			if ( empty( $feeds ) ) {
+				$start_step_meta = array (
+					'step_name' => __( 'Start', 'gravityflow' ),
+					'description' => '',
+					'step_type' => 'workflow_start',
+					'feed_condition_conditional_logic' => '0',
+					'feed_condition_conditional_logic_object' =>
+						array (
+						),
+					'scheduled' => '0',
+					'schedule_type' => 'delay',
+					'schedule_date' => '',
+					'schedule_delay_offset' => '',
+					'schedule_delay_unit' => 'hours',
+					'schedule_date_field_before_after' => 'after',
+					'schedule_date_field_offset' => '0',
+					'schedule_date_field_offset_unit' => 'hours',
+					'instructionsEnable' => '0',
+					'instructionsValue' => '',
+					'display_fields_mode' => 'all_fields',
+					'destination_complete' => 'next',
+				);
+				$this->insert_feed( $form_id, true, $start_step_meta );
+
+			}
+			return parent::save_feed_settings( $feed_id, $form_id, $settings );
+		}
+
 		/**
 		 * Updates the feed properties and triggers the assignee refresh.
 		 *
@@ -1756,6 +1787,20 @@ PRIMARY KEY  (id)
 		public function get_feeds( $form_id = null ) {
 
 			$feeds = parent::get_feeds( $form_id );
+
+			$start_feed = false;
+
+			foreach ( $feeds as $key => $feed ) {
+				if ( $feed['meta']['step_type'] == 'workflow_start' ) {
+					$start_feed = $feed;
+					unset( $feeds[ $key ] );
+					break;
+				}
+			}
+
+			if ( $start_feed ) {
+				array_unshift( $feeds, $start_feed );
+			}
 
 			$ordered_ids = get_option( 'gravityflow_feed_order_' . $form_id );
 
