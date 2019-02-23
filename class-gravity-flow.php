@@ -3624,9 +3624,15 @@ jQuery('#setting-entry-filter-{$name}').gfFilterUI({$filter_settings_json}, {$va
 			if ( count( $steps ) > 1 ) {
 				$choices = array();
 				foreach ( $steps as $step ) {
+
 					if ( ! $step->is_active() ) {
 						continue;
 					}
+
+					if ( $step->get_type() == 'workflow_complete' ) {
+						continue;
+					}
+
 					$step_id = $step->get_id();
 					if ( ! $current_step || ( $current_step && $current_step->get_id() != $step_id ) ) {
 						$choices[] = array(
