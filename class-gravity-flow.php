@@ -572,7 +572,7 @@ PRIMARY KEY  (id)
 
 				if ( $this->is_form_settings( 'gravityflow' ) && $this->is_feed_list_page() ) {
 					if ( $this->get_workflow_start_step( $form_id ) ) {
-						$has_complete_step = true;
+						$has_start_step = true;
 					}
 					if ( $this->get_workflow_complete_step( $form_id ) ) {
 						$has_complete_step = true;
