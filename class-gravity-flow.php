@@ -570,16 +570,16 @@ PRIMARY KEY  (id)
 					);
 				}
 				$steps = $this->is_form_settings( 'gravityflow' ) && $this->is_feed_list_page() ? $this->get_steps( $form_id ): array();
+
 				foreach ( $steps as $step ) {
 					if ( $step->get_type() == 'workflow_start' ) {
 						$has_start_step = true;
-					} elseif ( $step->get_type() == 'workflow_complete' ) {
-						$has_complete_step = true;
-					}
-
-					if ( $has_start_step && $has_complete_step ) {
 						break;
 					}
+				}
+
+				if ( $this->get_workflow_complete_step( $form_id ) ) {
+					$has_complete_step = true;
 				}
 			}
 
@@ -1268,16 +1268,19 @@ PRIMARY KEY  (id)
 				$has_start_step = true;
 			} elseif ( $is_complete_step ) {
 				$has_complete_step = true;
-			} else {
-				$form_id = absint( rgget('id' ) );
-				$steps = $this->get_steps( $form_id );
+			}
+
+			if ( ! ( $has_start_step && $has_complete_step ) ) {
+				$form_id = absint( rgget( 'id' ) );
+				$steps   = $this->get_steps( $form_id );
 				foreach ( $steps as $step ) {
 					if ( $step->get_type() == 'workflow_start' ) {
 						$has_start_step = true;
-					} elseif ( $step->get_type() == 'workflow_complete' ) {
-						$has_complete_step = true;
+						break;
 					}
 				}
+
+				$has_complete_step = $this->get_workflow_complete_step( $form_id ) ? true : false;
 			}
 
 			$step_type_choices = array();
@@ -1297,12 +1300,12 @@ PRIMARY KEY  (id)
 				}
 				if ( $step_class->is_supported() ) {
 					if ( $step_class->get_type() == 'workflow_start' ) {
-						if ( $steps && ( ! $has_start_step || $is_start_step ) ) {
-							$step_type_choices[] = $step_type_choice;
+						if ( $is_start_step || ( $steps && ! $has_start_step ) ) {
+							$start_step_choice = $step_type_choice;
 						}
 					} elseif ( $step_class->get_type() == 'workflow_complete' ) {
-						if ( $steps && ( ! $has_complete_step || $is_complete_step ) ) {
-							$step_type_choices[] = $step_type_choice;
+						if ( $is_complete_step || ( $steps && ! $has_complete_step ) ) {
+							$complete_step_choice = $step_type_choice;
 						}
 					} else {
 						$step_type_choices[] = $step_type_choice;
@@ -1310,6 +1313,14 @@ PRIMARY KEY  (id)
 				} else {
 					unset( $step_classes[ $key ] );
 				}
+			}
+
+			if ( $start_step_choice ) {
+				array_unshift( $step_type_choices, $start_step_choice );
+			}
+
+			if ( $complete_step_choice ) {
+				array_push( $step_type_choices, $complete_step_choice );
 			}
 
 			$settings = array();
@@ -1863,6 +1874,18 @@ PRIMARY KEY  (id)
 
 			$feeds = parent::get_feeds( $form_id );
 
+			$ordered_ids = get_option( 'gravityflow_feed_order_' . $form_id );
+
+			if ( $ordered_ids ) {
+				$feeds = array_reverse( $feeds );
+			}
+
+			if ( ! empty( $ordered_ids ) ) {
+				$this->step_order = $ordered_ids;
+
+				usort( $feeds, array( $this, 'sort_feeds' ) );
+			}
+
 			$start_feed = false;
 
 			$complete_feed = false;
@@ -1877,25 +1900,14 @@ PRIMARY KEY  (id)
 				}
 			}
 
-			if ( $start_feed ) {
-				array_unshift( $feeds, $start_feed );
-			}
+			if ( ! empty( $feeds ) ) {
+				if ( $start_feed ) {
+					array_unshift( $feeds, $start_feed );
+				}
 
-			if ( $complete_feed ) {
-				array_push( $feeds, $complete_feed );
-			}
-
-			$ordered_ids = get_option( 'gravityflow_feed_order_' . $form_id );
-
-			if ( $ordered_ids ) {
-				$feeds = array_reverse( $feeds );
-			}
-
-			if ( ! empty( $ordered_ids ) ) {
-				$this->step_order = $ordered_ids;
-
-				usort( $feeds, array( $this, 'sort_feeds' ) );
-
+				if ( $complete_feed ) {
+					array_push( $feeds, $complete_feed );
+				}
 			}
 
 			return $feeds;
@@ -1916,7 +1928,7 @@ PRIMARY KEY  (id)
 
 			foreach ( $feeds as $feed ) {
 				$step = Gravity_Flow_Steps::create( $feed, $entry );
-				if ( $step ) {
+				if ( $step && $step->get_type() != 'workflow_complete' ) {
 					$steps[] = $step;
 				}
 			}
@@ -1933,11 +1945,6 @@ PRIMARY KEY  (id)
 		 * @return bool|int
 		 */
 		public function sort_feeds( $a, $b ) {
-			if ( $a['meta']['step_type'] == 'workflow_start' ) {
-				return 0;
-			} elseif ( $a['meta']['step_type'] == 'workflow_complete' ) {
-				return 1;
-			}
 			$order = $this->step_order;
 			$a     = array_search( $a['id'], $order );
 			$b     = array_search( $b['id'], $order );
@@ -1951,6 +1958,32 @@ PRIMARY KEY  (id)
 			} else {
 				return $a - $b;
 			}
+		}
+
+		/**
+		 * Returns the virtual workflow complete step or false.
+		 *
+		 * @since 2.5
+		 *
+		 * @param null|int   $form_id Null or the form ID.
+		 * @param null|array $entry   Null or the entry to initialize the steps for.
+		 *
+		 * @return false|Gravity_Flow_Step_Workflow_Complete
+		 */
+		public function get_workflow_complete_step( $form_id = null, $entry = null ) {
+			$feeds = $this->get_feeds( $form_id );
+
+			$workflow_complete_step = false;
+
+			foreach ( $feeds as $feed ) {
+				$step = Gravity_Flow_Steps::create( $feed, $entry );
+				if ( $step && $step->get_type() == 'workflow_complete' ) {
+					$workflow_complete_step = $step;
+					break;
+				}
+			}
+
+			return $workflow_complete_step;
 		}
 
 		/**
@@ -2866,7 +2899,7 @@ PRIMARY KEY  (id)
 			$step_choices[] = array( 'label' => esc_html__( 'Next step in list', 'gravityflow' ), 'value' => 'next' );
 			foreach ( $steps as $i => $step ) {
 				$step_id = $step->get_id();
-				if ( $feed_id != $step_id && $step->get_type() != 'workflow_complete' ) {
+				if ( $feed_id != $step_id ) {
 					$step_choices[] = array( 'label' => $step->get_name(), 'value' => $step_id );
 				}
 			}
@@ -3088,6 +3121,22 @@ jQuery('#setting-entry-filter-{$name}').gfFilterUI({$filter_settings_json}, {$va
 			$form_id = rgget( 'id' );
 			$form_id = absint( $form_id );
 			$step = $this->get_step( $item['id'] );
+
+			if ( ! $step ) {
+				return '';
+			}
+
+			if ( $step->get_type() == "workflow_start" ) {
+				// Display the count only if there are scheduled entries.
+				$count = $step->entry_count();
+				return $count = $count ? $count : '';
+			}
+
+			if ( $step->get_type() == "workflow_complete" ) {
+				// There's currently no way to filter accurately on Gravity Forms entry list.
+				return '';
+			}
+
 			$step_id = $step ? $step->get_id() : 0;
 			$count = $step ? $step->entry_count() : 0;
 			$url = admin_url( 'admin.php?page=gf_entries&view=entries&id='. $form_id . '&field_id=workflow_step&operator=is&s=' . $step_id );
@@ -3632,10 +3681,6 @@ jQuery('#setting-entry-filter-{$name}').gfFilterUI({$filter_settings_json}, {$va
 				foreach ( $steps as $step ) {
 
 					if ( ! $step->is_active() ) {
-						continue;
-					}
-
-					if ( $step->get_type() == 'workflow_complete' ) {
 						continue;
 					}
 

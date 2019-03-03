@@ -113,13 +113,7 @@ class Gravity_Flow_Entry_Detail {
 									}
 
 								} else {
-									$steps = gravity_flow()->get_steps( $form['id'], $entry );
-									foreach( $steps as $s) {
-										if ( $s->get_type() == 'workflow_complete' ) {
-											$instructions_step = $s;
-											break;
-										}
-									}
+									$instructions_step = gravity_flow()->get_workflow_complete_step( $form_id, $entry );
 								}
 
 								if ( $instructions_step && $display_instructions ) {
@@ -886,11 +880,15 @@ class Gravity_Flow_Entry_Detail {
 		if ( ! GFAPI::current_user_can_any( 'gravityflow_status_view_all' ) ) {
 			$steps = gravity_flow()->get_steps( $form['id'], $entry );
 			if ( ! $is_assignee ) {
-				foreach( $steps as $s) {
-					if ( $current_step && $s->get_type() == 'workflow_start' || ( ! $current_step && $s->get_type() == 'workflow_complete' ) ) {
-						$display_fields_step = $s;
-						break;
+				if ( $current_step ) {
+					foreach( $steps as $s) {
+						if ( $current_step && $s->get_type() == 'workflow_start' ) {
+							$display_fields_step = $s;
+							break;
+						}
 					}
+				} else {
+					$display_fields_step = gravity_flow()->get_workflow_complete_step( $form_id );
 				}
 			}
 		}

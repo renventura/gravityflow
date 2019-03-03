@@ -21,14 +21,18 @@
             $('.wp-list-table tbody tr:first')
                 .addClass('static')
                 .append('<td class="sort-column">&nbsp;</td>')
-                .find('span.duplicate, span.delete').remove();
+                .find('span.duplicate, span.delete').remove()
+                .end()
+                .find('.column-is_active').html('&nbsp;');
         }
 
         if ( hasCompleteStep ) {
             $('.wp-list-table tbody tr:last')
                 .addClass('static')
                 .append('<td class="sort-column">&nbsp;</td>')
-                .find('span.duplicate, span.delete').remove();
+                .find('span.duplicate, span.delete').remove()
+                .end()
+                .find('.column-is_active').html('&nbsp;');
         }
 
         $('.wp-list-table tbody tr').not('.static').append(sortHandleMarkup);
