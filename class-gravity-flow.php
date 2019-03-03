@@ -569,17 +569,14 @@ PRIMARY KEY  (id)
 						'text' => esc_html( $field->get_field_label( false, null ) ),
 					);
 				}
-				$steps = $this->is_form_settings( 'gravityflow' ) && $this->is_feed_list_page() ? $this->get_steps( $form_id ): array();
 
-				foreach ( $steps as $step ) {
-					if ( $step->get_type() == 'workflow_start' ) {
-						$has_start_step = true;
-						break;
+				if ( $this->is_form_settings( 'gravityflow' ) && $this->is_feed_list_page() ) {
+					if ( $this->get_workflow_start_step( $form_id ) ) {
+						$has_complete_step = true;
 					}
-				}
-
-				if ( $this->get_workflow_complete_step( $form_id ) ) {
-					$has_complete_step = true;
+					if ( $this->get_workflow_complete_step( $form_id ) ) {
+						$has_complete_step = true;
+					}
 				}
 			}
 
@@ -1271,15 +1268,10 @@ PRIMARY KEY  (id)
 			}
 
 			if ( ! ( $has_start_step && $has_complete_step ) ) {
+				// Workflows created before 2.5 don't have start or complete steps - they can be added manually.
 				$form_id = absint( rgget( 'id' ) );
 				$steps   = $this->get_steps( $form_id );
-				foreach ( $steps as $step ) {
-					if ( $step->get_type() == 'workflow_start' ) {
-						$has_start_step = true;
-						break;
-					}
-				}
-
+				$has_start_step = $this->get_workflow_start_step( $form_id ) ? true : false;
 				$has_complete_step = $this->get_workflow_complete_step( $form_id ) ? true : false;
 			}
 
@@ -1916,6 +1908,8 @@ PRIMARY KEY  (id)
 		/**
 		 * Get the workflow steps.
 		 *
+		 * The virtual Workflow Complete step is not returned.
+		 *
 		 * @param null|int   $form_id Null or the form ID.
 		 * @param null|array $entry   Null or the entry to initialize the steps for.
 		 *
@@ -1966,7 +1960,7 @@ PRIMARY KEY  (id)
 		 * @since 2.5
 		 *
 		 * @param null|int   $form_id Null or the form ID.
-		 * @param null|array $entry   Null or the entry to initialize the steps for.
+		 * @param null|array $entry   Null or the entry to initialize the step for.
 		 *
 		 * @return false|Gravity_Flow_Step_Workflow_Complete
 		 */
@@ -1984,6 +1978,29 @@ PRIMARY KEY  (id)
 			}
 
 			return $workflow_complete_step;
+		}
+
+		/**
+		 * Returns the start step or false.
+		 *
+		 * @since 2.5
+		 *
+		 * @param null|int   $form_id Null or the form ID.
+		 * @param null|array $entry   Null or the entry to initialize the step for.
+		 *
+		 * @return false|Gravity_Flow_Step_Workflow_Start
+		 */
+		public function get_workflow_start_step( $form_id = null, $entry = null ) {
+			$steps = $this->get_steps( $form_id, $entry );
+
+			$start_step = false;
+
+			if ( ! empty( $steps ) && $steps[0]->get_type() == 'workflow_start' ) {
+				// The start step is always first in the list.
+				$start_step = $steps[0];
+			}
+
+			return $start_step;
 		}
 
 		/**
