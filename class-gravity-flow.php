@@ -1565,7 +1565,7 @@ PRIMARY KEY  (id)
 
 		public function save_feed_settings( $feed_id, $form_id, $settings ) {
 
-			// Get all feeds from the parent method. This includes the start and complete steps which are stripped from $this->get_feeds()
+			// Get all feeds from the parent method. This includes the start and complete steps which are stripped from $this->get_feeds() if there are no other steps.
 			$feeds = parent::get_feeds( $form_id );
 
 			if ( empty( $feeds ) ) {
