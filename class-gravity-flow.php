@@ -1565,7 +1565,9 @@ PRIMARY KEY  (id)
 
 		public function save_feed_settings( $feed_id, $form_id, $settings ) {
 
-			$feeds = $this->get_feeds( $form_id );
+			// Get all feeds from the parent method. This includes the start and complete steps which are stripped from $this->get_feeds()
+			$feeds = parent::get_feeds( $form_id );
+
 			if ( empty( $feeds ) ) {
 				$start_step_meta = array (
 					'step_name' => __( 'Start', 'gravityflow' ),
@@ -1857,6 +1859,8 @@ PRIMARY KEY  (id)
 
 		/**
 		 * Get the feeds for the specified form and sort them if applicable.
+		 *
+		 * This method strips out the start and complete feeds if there are no other feeds.
 		 *
 		 * @param null|int $form_id Null or the form ID.
 		 *
