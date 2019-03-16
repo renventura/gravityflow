@@ -56,10 +56,11 @@ $I->click( 'button[value=approved]' );
 // Log out
 $I->logOut();
 
+$I->wantTo( 'Test the complete settings' );
 
 $I->loginAs( 'subscriber', 'subscriber' );
 
-// Login as admin2
+// Login as admin
 $I->loginAsAdmin();
 $I->amOnPage( '/status' );
 $I->click( '0039 Start Complete' );
