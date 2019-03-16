@@ -3823,26 +3823,20 @@ jQuery('#setting-entry-filter-{$name}').gfFilterUI({$filter_settings_json}, {$va
 				if ( $next_step_id == 'complete' ) {
 					$step = false;
 					$keep_looking = false;
-				}
-
-				if ( $next_step_id == 'next' ) {
+				} elseif ( $next_step_id == 'next' ) {
 					$step = $this->get_next_step_in_list( $form, $step, $entry, $steps );
 					$keep_looking = false;
-				}
-
-				if ( ! in_array( $next_step_id, array( 'complete', 'next' ) ) ) {
+				} else {
 					$step = $this->get_step( $next_step_id, $entry );
-
-					if ( $step->get_type() == 'workflow_start' ) {
-						if ( $step->is_condition_met( $form ) ) {
-							return $step;
-						} else {
-							return false;
-						}
-					}
 
 					if ( empty( $step ) ) {
 						$keep_looking = false;
+					} elseif ( $step->get_type() == 'workflow_start' ) {
+						if ( $step->is_condition_met( $form ) ) {
+							$keep_looking = false;
+						} else {
+							$step = false;
+						}
 					} elseif ( ! $step->is_active() || ! $step->is_condition_met( $form ) ) {
 						$step = $this->get_next_step_in_list( $form, $step, $entry, $steps );
 						if ( ! empty( $step ) ) {
