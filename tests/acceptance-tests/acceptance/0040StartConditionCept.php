@@ -2,7 +2,6 @@
 /*
  * Purpose: Test that the start and complete settings work
  */
-// @group myTest
 
 $I = new AcceptanceTester( $scenario );
 

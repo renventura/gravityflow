@@ -60,8 +60,6 @@ $I->wantTo( 'Test the complete settings' );
 
 $I->loginAs( 'subscriber', 'subscriber' );
 
-// Login as admin
-$I->loginAsAdmin();
 $I->amOnPage( '/status' );
 $I->click( '0039 Start Complete' );
 $I->waitForText( 'Some text', 3 );
