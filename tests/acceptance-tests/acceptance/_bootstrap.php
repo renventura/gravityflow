@@ -61,6 +61,17 @@ function tests_create_testing_users() {
 		);
 		wp_insert_user( $userData );
 	}
+	$user = 'subscriber';
+	$userData = array(
+		'user_login' => $user,
+		'first_name' => $user,
+		'last_name'  => $user,
+		'user_pass'  => $user,
+		'user_email' => $user . '@mail.com',
+		'user_url'   => '',
+		'role'       => 'subscriber',
+	);
+	wp_insert_user( $userData );
 }
 
 tests_create_testing_users();
