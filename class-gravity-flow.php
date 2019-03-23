@@ -1563,6 +1563,17 @@ PRIMARY KEY  (id)
 			return true;
 		}
 
+		/**
+		 * Saves the feed settings. Adds the feeds for the start and complete settings if they don't already exist when the first step is added.
+		 *
+		 * @since 2.5
+		 *
+		 * @param $feed_id
+		 * @param $form_id
+		 * @param $settings
+		 *
+		 * @return int
+		 */
 		public function save_feed_settings( $feed_id, $form_id, $settings ) {
 
 			// Get all feeds from the parent method. This includes the start and complete steps which are stripped from $this->get_feeds() if there are no other steps.
