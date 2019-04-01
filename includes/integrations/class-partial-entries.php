@@ -143,7 +143,7 @@ class Gravity_Flow_Partial_Entries {
 	 */
 	public function is_workflow_enabled( $form_id ) {
 
-		if ( ! class_exists( 'GF_Partial_Entries' ) ) {
+		if ( ! $this->is_supported() ) {
 			return false;
 		}
 
