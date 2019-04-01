@@ -55,6 +55,9 @@ Gravity Flow will work with any license of [Gravity Forms](https://gravityflow.i
 
 == ChangeLog ==
 
+= 2.5.1 =
+- Fixed an issue where the start step settings are not displayed unless the Partial Entries Add-On is active.
+
 = 2.5 =
 - Added security enhancements.
 - Added support for the Gravity Forms Partial Entries Add-On.
