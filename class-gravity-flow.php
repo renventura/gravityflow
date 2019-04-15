@@ -811,7 +811,7 @@ PRIMARY KEY  (id)
 
 			$shortcode_found = false;
 			foreach ( $wp_query->posts as $post ) {
-				if ( stripos( $post->post_content, '[gravityflow' ) !== false ) {
+				if ( stripos( $post->post_content, '[gravityflow' ) !== false || stripos( $post->post_content, '<!-- wp:gravityflow/inbox' ) !== false ) {
 					$shortcode_found = true;
 					break;
 				}
