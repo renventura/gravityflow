@@ -5948,8 +5948,12 @@ jQuery('#setting-entry-filter-{$name}').gfFilterUI({$filter_settings_json}, {$va
 
 			if ( ! empty( $a['form'] ) && ! empty( $entry_id ) ) {
 				// Limited support for multiple shortcodes on the same page.
+				$form_id = $a['form'] ? explode( ',', $a['form'] ) : '';
+				if ( is_array( $form_id ) && count( $form_id ) === 1 ) {
+					$form_id = $form_id[0];
+				}
 				$entry = GFAPI::get_entry( $entry_id );
-				if ( is_wp_error( $entry ) || $entry['form_id'] !== $a['form'] ) {
+				if ( is_wp_error( $entry ) || ( is_array( $form_id ) && ! in_array( $entry['form_id'], $form_id ) ) || ( ! is_array( $form_id ) && $entry['form_id'] !== $a['form'] ) ) {
 					return;
 				}
 			}
@@ -6200,8 +6204,12 @@ jQuery('#setting-entry-filter-{$name}').gfFilterUI({$filter_settings_json}, {$va
 			);
 
 			if ( isset( $a['form'] ) ) {
+			    $form_id = $a['form'] ? explode( ',', $a['form'] ) : '';
+			    if ( is_array( $form_id ) && count( $form_id ) === 1 ) {
+				    $form_id = $form_id[0];
+                }
 				$args['constraint_filters'] = array(
-					'form_id' => $a['form'],
+					'form_id' => $form_id,
 				);
 			}
 
