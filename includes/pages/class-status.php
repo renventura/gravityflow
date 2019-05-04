@@ -605,7 +605,7 @@ class Gravity_Flow_Status_Table extends WP_List_Table {
 		        continue;
             }
 
-		    if ( ! empty( $form_id ) && $form['id'] == $form_id )  {
+		    if ( ! empty( $form_id ) && $form['id'] != $form_id )  {
 		        continue;
             }
 
