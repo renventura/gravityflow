@@ -55,6 +55,13 @@ Gravity Flow will work with any license of [Gravity Forms](https://gravityflow.i
 
 == ChangeLog ==
 
+= 2.5.2 =
+- Added security enhancements.
+- Fixed an issue with due date column of inbox shortcode displaying a default value when no step settings had been defined.
+- Fixed an issue with the inbox incorrectly highlighting some entries as overdue.
+- Fixed the workflow stalling on the Dropbox step when there are no files to process.
+- Fixed an issue with the display of schedule date field settings.
+
 = 2.5.1 =
 - Fixed an issue where the start step settings are not displayed unless the Partial Entries Add-On is active.
 
