@@ -770,9 +770,7 @@ class Gravity_Flow_Entry_Detail {
 				</td>
 			</tr>
 			<?php
-			if ( $entry_editor->has_product_fields || $current_step->display_order_summary ) {
-				self::maybe_show_products_summary( $form, $entry, $current_step );
-			}
+			self::maybe_show_products_summary( $form, $entry, $current_step );
 			?>
 		</tbody>
 		<?php
@@ -960,7 +958,7 @@ class Gravity_Flow_Entry_Detail {
 			}
 		}
 
-		if ( $format == 'table' && ( $has_product_fields || $current_step->display_order_summary ) ) {
+		if ( $format == 'table' ) {
 			self::maybe_show_products_summary( $form, $entry, $current_step );
 		}
 
