@@ -1,0 +1,1 @@
+-Fixed scenario where user input steps would not show the product order summary table when step setting was selected
