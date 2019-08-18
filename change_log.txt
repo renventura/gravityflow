@@ -1,3 +1,4 @@
+- Added filter gravityflow_columns_sortable_status_table to enable customization of which columns of status table are sortable
 - Fixed the Post Creation step creating duplicate posts when the workflow or step is restarted.
 - Fixed back link display on entry detail page to use css with class gravityflow-back-link-container instead of line breaks for spacing.
 - Fixed PHP 7.3 compatability warning related to entry detail screen display.

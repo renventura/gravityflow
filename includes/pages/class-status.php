@@ -1209,6 +1209,17 @@ class Gravity_Flow_Status_Table extends WP_List_Table {
 			}
 		}
 
+		/**
+		 * Allows the columns which are sortable to be filtered for the status table.
+		 *
+		 * @since 2.5.7
+		 *
+		 * @param array         $sortable_columns The sortable columns to be filtered
+		 * @param array         $args             The array of args for this status table.
+		 * @param WP_List_Table $this             The current WP_List_Table object.
+		 */
+		 $sortable_columns = apply_filters( 'gravityflow_columns_sortable_status_table', $sortable_columns, $args, $this );
+
 		return $sortable_columns;
 	}
 
