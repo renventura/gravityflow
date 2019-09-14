@@ -999,6 +999,7 @@ abstract class Gravity_Flow_Step extends stdClass {
 		$notification['fromName']          = empty( $this->{$from_name} ) ? gravity_flow()->get_app_setting( 'from_name', get_bloginfo( 'name' ) ) : $this->{$from_name};
 		$notification['from']              = empty( $this->{$from_email} ) ? gravity_flow()->get_app_setting( 'from_email', get_bloginfo( 'admin_email' ) ) : $this->{$from_email};
 		$notification['replyTo']           = $this->{$type . 'reply_to'};
+		$notification['cc']                = $this->{$type . 'cc'};
 		$notification['bcc']               = $this->{$type . 'bcc'};
 		$notification['message']           = $this->{$type . 'message'};
 		$notification['disableAutoformat'] = $this->{$type . 'disable_autoformat'};
