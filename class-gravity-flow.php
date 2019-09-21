@@ -5862,7 +5862,7 @@ jQuery('#setting-entry-filter-{$name}').gfFilterUI({$filter_settings_json}, {$va
 				$this->process_workflow( $form, $entry_id );
 			} else {
 				$this->log_debug( __METHOD__ . '(): Entry ' . $entry['id'] . ' is already fulfilled or workflow is not delayed. No action necessary.' );
-            }
+			}
 		}
 
 		/**
