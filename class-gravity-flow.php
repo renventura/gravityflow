@@ -5784,8 +5784,8 @@ jQuery('#setting-entry-filter-{$name}').gfFilterUI({$filter_settings_json}, {$va
 		/**
 		 * Determines if workflow processing should be delayed for the current submission.
 		 *
-		 * @since 2.5.8 Updated to support the delayed payment enhancements in GF 2.4.13.
 		 * @since unknown
+		 * @since 2.5.8 Updated to support the delayed payment enhancements in GF 2.4.13.
 		 *
 		 * @param array $entry The entry created from the current form submission.
 		 * @param array $form  The form object used to process the current submission.
@@ -5827,8 +5827,8 @@ jQuery('#setting-entry-filter-{$name}').gfFilterUI({$filter_settings_json}, {$va
 		/**
 		 * Starts the workflow if it was delayed pending PayPal payment.
 		 *
-		 * @since 2.5.8 Updated to use action_trigger_payment_delayed_feeds().
 		 * @since unknown
+		 * @since 2.5.8 Updated to use action_trigger_payment_delayed_feeds().
 		 *
 		 * @param array  $entry          The entry for which the PayPal payment has been completed.
 		 * @param array  $paypal_config  The PayPal feed used to process the entry.
