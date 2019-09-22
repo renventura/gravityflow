@@ -1,1 +1,3 @@
-- Add support for CC: field to all Gravity Flow notification types.
+- Added the filter gravityflow_timeline_note_add to support customizing the potential note to add to timeline.
+- Added the filter gravityflow_timeline_notes to support customizing the display of timeline notes.
+- Added support for CC: field to all Gravity Flow notification types.
